@@ -18,15 +18,14 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
-
       #- name: Run unit tests
       #  run: npm test
 
-      - name: Build Docker image
-        run: |
-          docker build -t order-fiap .  
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -34,11 +33,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push Docker image to Docker Hub
+      - name: Build and push Docker image
         run: |
-          docker tag order-fiap:latest santanarael/order-fiap:latest
-          docker push santanarael/order-fiap:latest
-
+          docker buildx build --platform linux/amd64,linux/arm64 -t santanarael/order-fiap:latest --push .
       - name: Install kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -49,9 +46,6 @@ jobs:
 
       - name: Configure AWS credentials
         run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
           mkdir -p ~/.aws
           echo "${{ secrets.AWS_CREDENTIALS }}" > ~/.aws/credentials
           chmod 600 ~/.aws/credentials
