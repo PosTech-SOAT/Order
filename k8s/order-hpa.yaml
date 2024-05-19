@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: hpa-api
+  name: hpa-order
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
