@@ -59,7 +59,7 @@ jobs:
           kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
           sleep 10s
           kubectl apply -f k8s/postgres-deployment.yaml
-          sleep 10s
+          sleep 20s
           kubectl apply -f k8s/order-deployment.yaml
           sleep 10s
           kubectl apply -f k8s/order-hpa.yaml
