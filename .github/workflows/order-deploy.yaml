@@ -18,8 +18,11 @@ jobs:
         with:
           node-version: '18'
 
-      #- name: Run unit tests
-      #  run: npm test
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npm run test
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
