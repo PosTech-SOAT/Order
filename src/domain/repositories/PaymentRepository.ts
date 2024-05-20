@@ -14,6 +14,8 @@ export class PaymentRepository implements IPaymentRepository {
 				).data;
 				return payment_url;
 			} catch (error) {
+				console.log('payment url: ', process.env.PAYMENT_URL);
+				console.log('payment error: ', error);
 				throw new Error(GENERIC_ERROR_MESSAGE);
 			}
 		}
