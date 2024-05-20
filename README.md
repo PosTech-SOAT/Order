@@ -1,97 +1,32 @@
-# Tech Challenge - PosTech-3SOAT - FIAP
+# Microsserviço de Pedido (order)
 
-Projeto de um Sistema de Controle de pedidos em desenvolvimento durante a Pós-graduação em Arquitetura de Software da FIAP.
+## Visão Geral
 
-## Tecnologias Utilizadas:
+Este repositório contém o código-fonte e os recursos necessários para o microsserviço de Pedido do projeto de um Sistema de Controle de Pedidos, desenvolvido durante a Pós-graduação em Arquitetura de Software da FIAP. Este microsserviço faz parte de uma aplicação maior construída em Node.js com TypeScript, Docker e Kubernetes.
 
-- [NodeJs](https://nodejs.org/en/docs)
-- [Express](https://expressjs.com/pt-br/)
-- [TypeORM](https://typeorm.io/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Docker](https://docs.docker.com/)
+### Tecnologias Utilizadas:
+- Node.js
+- Express
+- TypeORM
+- PostgreSQL
+- Docker
+- MongoDB Atlas
+- Kubernetes
+- Jest
 
-## Dependencias:
+## Pipeline
 
-Para a execução do projeto, as seguintes dependências precisão ser satifeitas,
+A pipeline está configurada para facilitar a integração contínua e a entrega contínua (CI/CD) do microsserviço de Pedido:
 
-- [Docker](https://docs.docker.com/get-docker/).
-- [NodeJS](https://nodejs.org/en), Versão: 18.x ou superior.
+1. **Testes Unitários:** Os testes unitários são executados automaticamente na pipeline.
+2. **Construção da Imagem Docker:** Após a aprovação dos testes, a imagem Docker é construída a partir do Dockerfile fornecido.
+3. **Deploy no Kubernetes:** Os manifestos Kubernetes em `k8s/` são aplicados no cluster Kubernetes utilizando `kubectl apply`.
 
-## Instalação do Projeto:
+## Configuração
 
-Fazer o clone e ir na pasta do projeto:
+Antes de executar a pipeline, certifique-se de configurar as seguintes variáveis de ambiente:
 
-```sh
-git clone https://github.com/VitorDiToro/PosTech-3SOAT
-cd PosTech-3SOAT
-```
+- `AWS_CREDENTIALS`: Credenciais de acesso à AWS.
 
-Instalar as dependências do projeto:
 
-```sh
-yarn install
-```
-
-**Nota 💡**
-
-> **_Caso não possua o Yarn instalado na sua máquina, pode proceder com a instalação via Npm._**
-
-Subir os contâineres do Node e do PostgreSQL usando o arquivo docker-compose.yml:
-
-```sh
-docker compose up
-```
-
-Verificar se subiram os containeres **postech-3soat-app** e **database_postech**:
-
-```sh
-docker ps
-```
-
-## Documentação da API
-
-Acessar pelo navegador a url:
-
-```sh
-http://localhost:3000/api-docs
-```
-
-## Rodando o Kubernetes
-
-Clique [aqui](https://kubernetes.io/docs/setup/) na documentação do Kubernetes para configurar e instalar o `kubectl` sua máquina.
-Obs: Verifique qual tipo de cluster será usado e realize a configuração adequada da permissão das métricas do respectivo cluster.
-
-e.g.: Para o cluster embarcado ao Docker Desktop, siga as instruções de configuração [aqui](https://github.com/kubernetes-sigs/metrics-server/releases).
-
-Obs: Antes de executar o passo a passo de apply dos arquivos yaml, verifique se as métricas estão configuradas, com:
-
-```
-kubectl top node
-```
-
-ou
-
-```
-kubectl top pod -A
-```
-
-Execute o passo a passo:
-
-```
-kubectl apply -f postgres-deployment.yaml
-```
-
-Verifique se o pod do postgres está como running e pronto para receber conexões, com:
-
-```
-kubectl logs <nome-do-pod>
-```
-
-Em seguida, execute os mesmos passos para o arquivo `api-deployment.yaml`.
-Na sequência, execute o comando de apply nos arquivos `hpa-api.yaml` e `hpa-postgres.yaml`, para habilitar o autoscaler dos pods.
-
-Atenção! Poder ser necessário realizar um port forward para conseguir acessar localmente os serviços internos do cluster, portanto, execute:
-
-```
-kubectl port-forward pod/<nome-do-pod> <porta-externa>:<porta-interna-do-pod> &
-```
+Certifique-se de que essas variáveis de ambiente estejam configuradas corretamente para garantir o funcionamento adequado da pipeline.
