@@ -16,11 +16,11 @@ spec:
       - name: postgres
         image: postgres:latest
         env:
-          - name: POSTGRES_USER
+          - name: DB_USER
             value: root
-          - name: POSTGRES_PASSWORD
+          - name: DB_PASS
             value: "root"
-          - name: POSTGRES_DB
+          - name: DB_NAME
             value: postech
         ports:
         - containerPort: 5432
