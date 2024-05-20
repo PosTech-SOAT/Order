@@ -28,6 +28,10 @@ spec:
               value: root
             - name: DB_NAME
               value: postech
+            - name: CLIENT_URL
+              value: http://custumer-service:3001
+            - name: PAYMENT_URL
+              value: http://payment-service:3002
           resources:
             requests:
               memory: '128Mi'
