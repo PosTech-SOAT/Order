@@ -68,18 +68,4 @@ jobs:
           sleep 10s
           kubectl apply -f k8s/order-hpa.yaml
           echo "http://$(kubectl get svc order-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}'):33333/api/orders"
-          
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          for i in {1..30}; do
-            nc -z postgres-service 5432 && echo "PostgreSQL is up" && break || echo "Waiting for PostgreSQL..." && sleep 10;
-          done
-          
-      - name: Run migration
-        run: npm run migration:run
-        env:
-          DB_HOST: "$(kubectl get svc order-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
-          DB_PORT: "5432"
-          DB_USER: root
-          DB_PASS: root
-          DB_NAME: postech
+  
