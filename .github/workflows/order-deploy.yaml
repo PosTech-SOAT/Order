@@ -77,3 +77,9 @@ jobs:
           
       - name: Run migration
         run: npm run migration:run
+        env:
+          DB_HOST: postgres-service
+          DB_PORT: "5432"
+          DB_USER: root
+          DB_PASS: root
+          DB_NAME: postech
