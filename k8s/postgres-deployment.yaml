@@ -18,7 +18,7 @@ spec:
         env:
           - name: DB_USER
             value: root
-          - name: DB_PASS
+          - name: POSTGRES_PASSWORD
             value: "root"
           - name: DB_NAME
             value: postech
