@@ -20,9 +20,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        
-      - name: Run migration
-        run: npm run migration:run
 
       - name: Run unit tests
         run: npm run test
@@ -70,3 +67,5 @@ jobs:
           sleep 10s
           kubectl apply -f k8s/order-hpa.yaml
           echo "http://$(kubectl get svc order-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}'):33333/api/orders"
+      - name: Run migration
+        run: npm run migration:run
