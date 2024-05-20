@@ -78,7 +78,7 @@ jobs:
       - name: Run migration
         run: npm run migration:run
         env:
-          DB_HOST: postgres-service
+          DB_HOST: "$(kubectl get svc order-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
           DB_PORT: "5432"
           DB_USER: root
           DB_PASS: root
