@@ -39,6 +39,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 -t santanarael/order-fiap:latest --push .
+
       - name: Install kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -67,5 +68,12 @@ jobs:
           sleep 10s
           kubectl apply -f k8s/order-hpa.yaml
           echo "http://$(kubectl get svc order-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}'):33333/api/orders"
+          
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          for i in {1..30}; do
+            nc -z postgres-service 5432 && echo "PostgreSQL is up" && break || echo "Waiting for PostgreSQL..." && sleep 10;
+          done
+          
       - name: Run migration
         run: npm run migration:run
