@@ -61,3 +61,4 @@ jobs:
           kubectl apply -f k8s/order-deployment.yaml
           sleep 10s
           kubectl apply -f k8s/order-hpa.yaml
+          echo "http://$(kubectl get svc order-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}'):33333/api/orders"
