@@ -27,6 +27,8 @@ services:
       - DB_USER=root
       - DB_PASS=root
       - DB_NAME=postech
+      - CLIENT_URL=http://postech_customer_container:3001
+      - PAYMENT_URL=http://postech_payment_container:3002
     volumes:
       - .:/usr/app
     links:

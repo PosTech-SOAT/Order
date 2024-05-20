@@ -32,11 +32,15 @@ export class OrderRepository implements IOrderRepository {
 			where: { status: Not(OrderStatus.FINALIZADO) },
 		});
 
-		const orderDtos = await Promise.all(orders.map(async order => {
-			const clientData = JSON.parse(order.clientId);
-			const clientResponse = await axios.get(`http://postech_customer_container:3001/api/clients/${clientData.id}`);
-			return mapOrderToOrderDto(order, clientResponse.data);
-		}));
+		const orderDtos = await Promise.all(
+			orders.map(async (order) => {
+				const clientData = JSON.parse(order.clientId);
+				const clientResponse = await axios.get(
+					`${process.env.CLIENT_URL}/api/clients/${clientData.id}`,
+				);
+				return mapOrderToOrderDto(order, clientResponse.data);
+			}),
+		);
 
 		return orderDtos;
 	}
@@ -51,15 +55,20 @@ export class OrderRepository implements IOrderRepository {
 			.getMany();
 
 		const clientResponses = await Promise.all(
-			orders.map(order => {
+			orders.map((order) => {
 				const clientData = JSON.parse(order.clientId);
-				return axios.get(`http://postech_customer_container:3001/api/clients/${clientData.id}`);
-			})
+				return axios.get(
+					`${process.env.CLIENT_URL}/api/clients/${clientData.id}`,
+				);
+			}),
 		);
 
 		const ordersWithClientData = orders.map((order, index) => {
 			const client = clientResponses[index].data;
-			const products = order.products.map(product => ({...product, order: {...order, client}}));
+			const products = order.products.map((product) => ({
+				...product,
+				order: { ...order, client },
+			}));
 			return { ...order, client, products };
 		});
 
@@ -81,7 +90,9 @@ export class OrderRepository implements IOrderRepository {
 			}
 
 			const clientData = JSON.parse(order.clientId);
-			const clientResponse = await axios.get(`http://postech_customer_container:3001/api/clients/${clientData.id}`);
+			const clientResponse = await axios.get(
+				`${process.env.CLIENT_URL}/api/clients/${clientData.id}`,
+			);
 
 			const orderDto = mapOrderToOrderDto(order, clientResponse.data);
 			return orderDto;
@@ -118,7 +129,9 @@ export class OrderRepository implements IOrderRepository {
 		const connection = this.getRepo();
 		const order = new Order();
 
-		const clientResponse = await axios.get(`http://postech_customer_container:3001/api/clients/${clientId}`);
+		const clientResponse = await axios.get(
+			`${process.env.CLIENT_URL}/api/clients/${clientId}`,
+		);
 		if (!clientResponse.data) {
 			throw new Error(`Client with id ${clientId} not found`);
 		}

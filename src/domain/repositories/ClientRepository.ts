@@ -6,7 +6,10 @@ import { IClient } from '../../infra/entities/ClientEntity';
 export class ClientRepository implements IClientRepository {
 	async createClient(params: CreateClientParamsDto): Promise<IClient> {
 		try {
-			const response = await axios.post('http://postech_customer_container:3001/api/clients', params);
+			const response = await axios.post(
+				`${process.env.CLIENT_URL}/api/clients`,
+				params,
+			);
 			return response.data;
 		} catch (error) {
 			console.error('Erro ao criar cliente:', error);
@@ -16,7 +19,9 @@ export class ClientRepository implements IClientRepository {
 
 	async findByCPF(cpf: string): Promise<IClient | null> {
 		try {
-			const response = await axios.get(`http://postech_customer_container:3001/api/clients/${cpf}`);
+			const response = await axios.get(
+				`${process.env.CLIENT_URL}/api/clients/${cpf}`,
+			);
 			return response.data || null;
 		} catch (error) {
 			console.error('Erro ao buscar cliente por CPF:', error);
@@ -24,10 +29,11 @@ export class ClientRepository implements IClientRepository {
 		}
 	}
 
-
 	async findById(id: string): Promise<IClient | null> {
 		try {
-			const response = await axios.get(`http://postech_customer_container:3001/api/clients/${id}`);
+			const response = await axios.get(
+				`${process.env.CLIENT_URL}/api/clients/${id}`,
+			);
 			return response.data || null;
 		} catch (error) {
 			console.error('Erro ao buscar cliente por ID:', error);
@@ -37,7 +43,7 @@ export class ClientRepository implements IClientRepository {
 
 	async list(): Promise<IClient[]> {
 		try {
-			const response = await axios.get('http://postech_customer_container:3001/api/clients');
+			const response = await axios.get(`${process.env.CLIENT_URL}/api/clients`);
 			return response.data;
 		} catch (error) {
 			console.error('Erro ao listar clientes:', error);
@@ -47,7 +53,7 @@ export class ClientRepository implements IClientRepository {
 
 	async update(cpf: string, data: CreateClientParamsDto): Promise<void> {
 		try {
-			await axios.put(`http://postech_customer_container:3001/api/clients/${cpf}`, data);
+			await axios.put(`${process.env.CLIENT_URL}/api/clients/${cpf}`, data);
 		} catch (error) {
 			console.error('Erro ao atualizar cliente:', error);
 			throw error;

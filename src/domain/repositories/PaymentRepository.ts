@@ -10,10 +10,7 @@ export class PaymentRepository implements IPaymentRepository {
 		if (order) {
 			try {
 				const { payment_url } = (
-					await axios.post(
-						'http://postech_payment_container:3002/api/payment',
-						order,
-					)
+					await axios.post(`${process.env.PAYMENT_URL}/api/payment`, order)
 				).data;
 				return payment_url;
 			} catch (error) {

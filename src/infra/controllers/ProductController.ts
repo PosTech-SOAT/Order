@@ -17,7 +17,9 @@ export default class ProductController {
 		try {
 			await createProductUseCase.execute(request.body);
 
-			return response.status(201).json({ message: 'Product created successfully' });
+			return response
+				.status(201)
+				.json({ message: 'Product created successfully' });
 		} catch (error: any) {
 			return response.status(400).json({ message: error.message });
 		}
@@ -35,7 +37,6 @@ export default class ProductController {
 	}
 
 	async findById(request: Request, response: Response) {
-
 		const findOneProductUseCase = container.resolve(ProductFindOneUseCase);
 		try {
 			const Product = await findOneProductUseCase.execute(request.params.id);
@@ -47,10 +48,13 @@ export default class ProductController {
 	}
 
 	async findAllByCategory(request: Request, response: Response) {
-
-		const findProductListByCategoryUseCase = container.resolve(ProductListByCategoryUseCase);
+		const findProductListByCategoryUseCase = container.resolve(
+			ProductListByCategoryUseCase,
+		);
 		try {
-			const Product = await findProductListByCategoryUseCase.execute(request.params.id);
+			const Product = await findProductListByCategoryUseCase.execute(
+				request.params.id,
+			);
 
 			return response.status(200).json(Product);
 		} catch (error: any) {
@@ -59,27 +63,31 @@ export default class ProductController {
 	}
 
 	async update(request: Request, response: Response) {
-
 		const productUpdateUseCase = container.resolve(ProductUpdateUseCase);
 		try {
-			await productUpdateUseCase.execute({id: request.params.id, body: request.body as Partial<UpdateProductParams> });
+			await productUpdateUseCase.execute({
+				id: request.params.id,
+				body: request.body as Partial<UpdateProductParams>,
+			});
 
-			return response.status(200).json({ message: 'Product updated successfully' });
+			return response
+				.status(200)
+				.json({ message: 'Product updated successfully' });
 		} catch (error: any) {
 			return response.status(400).json({ message: error.message });
 		}
 	}
 
 	async delete(request: Request, response: Response) {
-
 		const deleteProductUseCase = container.resolve(ProductDeleteUseCase);
 		try {
 			await deleteProductUseCase.execute(request.params.id);
 
-			return response.status(200).json({ message: 'Product deleted successfully' });
+			return response
+				.status(200)
+				.json({ message: 'Product deleted successfully' });
 		} catch (error: any) {
 			return response.status(400).json({ message: error.message });
 		}
 	}
-
 }

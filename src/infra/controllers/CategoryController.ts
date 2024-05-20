@@ -16,7 +16,9 @@ export default class CategoryController {
 		try {
 			await createCategoryUseCase.execute(category);
 
-			return response.status(201).json({ message: 'Category created successfully' });
+			return response
+				.status(201)
+				.json({ message: 'Category created successfully' });
 		} catch (error: any) {
 			return response.status(400).json({ message: error.message });
 		}
@@ -45,27 +47,31 @@ export default class CategoryController {
 	}
 
 	async delete(request: Request, response: Response) {
-
 		const deleteCategoryUseCase = container.resolve(CategoryDeleteUseCase);
 		try {
 			await deleteCategoryUseCase.execute(request.params.id);
 
-			return response.status(204).json({ message: 'Category deleted successfully' });
+			return response
+				.status(204)
+				.json({ message: 'Category deleted successfully' });
 		} catch (error: any) {
 			return response.status(400).json({ message: error.message });
 		}
 	}
 
 	async update(request: Request, response: Response) {
-
 		const updateCategoryUseCase = container.resolve(CategoryUpdateUseCase);
 		try {
-			await updateCategoryUseCase.execute({id: request.params.id, params: request.body});
+			await updateCategoryUseCase.execute({
+				id: request.params.id,
+				params: request.body,
+			});
 
-			return response.status(200).json({ message: 'Category updated successfully' });
+			return response
+				.status(200)
+				.json({ message: 'Category updated successfully' });
 		} catch (error: any) {
 			return response.status(400).json({ message: error.message });
 		}
 	}
-
 }
