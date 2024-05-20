@@ -44,4 +44,4 @@ spec:
       port: 5432
       targetPort: 5432
       nodePort: 30002  
-  type: NodePort
+  type: LoadBalancer
