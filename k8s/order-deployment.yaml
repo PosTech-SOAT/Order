@@ -29,9 +29,9 @@ spec:
             - name: DB_NAME
               value: postech
             - name: CLIENT_URL
-              value: http://custumer-service:3001
+              value: http://custumer-service:32323
             - name: PAYMENT_URL
-              value: http://payment-service:3002
+              value: http://payment-service:34343
           resources:
             requests:
               memory: '128Mi'
