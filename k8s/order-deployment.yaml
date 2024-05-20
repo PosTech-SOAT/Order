@@ -19,22 +19,22 @@ spec:
             - containerPort: 3000
           env:
             - name: DB_HOST
-              value: database_postech
+              value: postgres-service
             - name: DB_PORT
-              value: '5432'
+              value: "5432"
             - name: DB_USER
               value: root
-            - name: POSTGRES_PASSWORD
-              value: 'root'
+            - name: DB_PASS
+              value: root
             - name: DB_NAME
               value: postech
           resources:
             requests:
-              memory: '128Mi' # Memória inicial / MI = milicores (1 core = 1000 milicores)
-              cpu: '100m' # CPU inicial
+              memory: '128Mi'
+              cpu: '100m'
             limits:
-              memory: '628Mi' # Limite máximo de memória
-              cpu: '300m' # Limite máximo de CPU  / M = megabytes
+              memory: '628Mi'
+              cpu: '300m'
 ---
 apiVersion: v1
 kind: Service

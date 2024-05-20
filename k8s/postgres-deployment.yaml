@@ -16,21 +16,21 @@ spec:
       - name: postgres
         image: postgres:latest
         env:
-          - name: DB_USER
+          - name: POSTGRES_USER
             value: root
           - name: POSTGRES_PASSWORD
-            value: "root"
-          - name: DB_NAME
+            value: root
+          - name: POSTGRES_DB
             value: postech
         ports:
         - containerPort: 5432
-        resources:   
+        resources:
           requests:
-            memory: "164Mi"   # Memória inicial / MI = milicores (1 core = 1000 milicores)
-            cpu: "100m"       # CPU inicial 
+            memory: "164Mi"
+            cpu: "100m"
           limits:
-            memory: "228Mi"  # Limite máximo de memória
-            cpu: "500m"      # Limite máximo de CPU  / M = megabytes
+            memory: "228Mi"
+            cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
@@ -43,5 +43,4 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-      nodePort: 30002  
   type: LoadBalancer
