@@ -24,6 +24,11 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
