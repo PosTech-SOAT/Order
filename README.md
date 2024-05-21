@@ -2,6 +2,9 @@
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=PosTech-SOAT_Order)](https://sonarcloud.io/summary/new_code?id=PosTech-SOAT_Order)
 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=PosTech-SOAT_Order&metric=coverage)](https://sonarcloud.io/summary/new_code?id=PosTech-SOAT_Order)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=PosTech-SOAT_Order&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=PosTech-SOAT_Order)
+
 ## Visão Geral
 
 Este repositório contém o código-fonte e os recursos necessários para o microsserviço de Pedido do projeto de um Sistema de Controle de Pedidos, desenvolvido durante a Pós-graduação em Arquitetura de Software da FIAP. Este microsserviço faz parte de uma aplicação maior construída em Node.js com TypeScript, Docker e Kubernetes.
