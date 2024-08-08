@@ -10,6 +10,8 @@ import OrderDeleteUseCase from '../../domain/use-cases/Order/OrderDeleteUseCase'
 import { PaymentRepository } from '../../domain/repositories/PaymentRepository';
 import { PaymentWebhookRequestParams } from '../dto/PaymentWebhookRequestDto';
 import { IPaymentRepository } from '../../domain/interfaces/repositories/IPaymentRepository';
+import rabbitMqInstance from '../../data/data-sources/factories/RabbitMqInstance';
+import { Message } from 'amqplib';
 
 export default class OrderController {
 	private paymentRepository: IPaymentRepository;
@@ -29,6 +31,9 @@ export default class OrderController {
 			const payment_url = await instance.paymentRepository.CreatePayment(
 				await findOneOrderUseCase.execute(order.id),
 			);
+			await rabbitMqInstance.start();
+			await rabbitMqInstance.enQueue('new_order', JSON.stringify(order));
+
 			return response.status(201).json({
 				message: 'Order created successfully',
 				payment_url: payment_url,
@@ -96,25 +101,32 @@ export default class OrderController {
 		}
 	}
 
-	async paymentWebhook(
-		request: Request,
-		response: Response,
-		instance: OrderController,
-	) {
-		const query = request.query as unknown as PaymentWebhookRequestParams;
-		const status =
-			query.status === 'approved'
-				? OrderStatus.RECEBIDO
-				: OrderStatus.AGUARDANDO_PAGAMENTO;
+	async paymentWebhook(message: Message, instance: OrderController) {
 		try {
+			const query = JSON.parse(
+				message.content.toString(),
+			) as PaymentWebhookRequestParams;
+
+			console.log('🔍 Dados recebidos no webhook:', query);
+
+			const status =
+				query.status === 'approved'
+					? OrderStatus.RECEBIDO
+					: OrderStatus.AGUARDANDO_PAGAMENTO;
+
+			console.log(`📊 Atualizando status para: ${status}`);
+
 			await instance.executeStatusUpdate(query.external_reference, status);
 
-			return response.status(200).json({
-				message: 'Order updated successfully',
-				order_id: query.external_reference,
-			});
-		} catch (error: any) {
-			return response.status(400).json({ message: error.message });
+			console.log('🛠 Banco de dados atualizado com sucesso');
+
+			// Confirmar que a mensagem foi processada com sucesso
+			return Promise.resolve();
+		} catch (error) {
+			console.error('❌ Erro ao processar o webhook de pagamento:', error);
+
+			// Devolver a mensagem à fila caso haja um erro
+			return Promise.reject(error);
 		}
 	}
 

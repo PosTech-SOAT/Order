@@ -7,19 +7,48 @@ import swaggerFile from './infra/openapi/openapi.json';
 import './infra/controllers/container';
 import router from './presentation';
 import { configDotenv } from 'dotenv';
-configDotenv();
-const app = express();
-app.use(express.json());
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+import rabbitMqInstance from './data/data-sources/factories/RabbitMqInstance';
+import OrderController from './infra/controllers/OrderController';
+async function bootstrap() {
+	configDotenv();
+	const app = express();
+	await app.use(express.json());
+	await app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-app.use('/api', router);
+	await app.use('/api', router);
 
-app.listen(3000, () => {
-	console.log('🔥 Server listening at http://localhost:3000/api-docs');
-	console.log(
-		process.env.DB_HOST,
-		process.env.DB_USER,
-		process.env.DB_PASS,
-		process.env.DB_NAME,
-	);
-});
+	await app.listen(3000, () => {
+		console.log('🔥 Server listening at http://localhost:3000/api-docs');
+		console.log(
+			process.env.DB_HOST,
+			process.env.DB_USER,
+			process.env.DB_PASS,
+			process.env.DB_NAME,
+		);
+		console.log(
+			`${process.env.AMQP_USER}:${process.env.AMQP_PASS}@${process.env.AMQP_HOST}:${process.env.AMQP_PORT}`,
+		);
+	});
+
+	const listenQueue = async () => {
+		try {
+			const orderController = new OrderController();
+			await rabbitMqInstance.start();
+			console.log('🚀 RabbitMQ connected and listening...');
+			await rabbitMqInstance.listen('payment_update', async (message) => {
+				try {
+					console.log('Mensagem recebida:', message);
+					await orderController.paymentWebhook(message, orderController);
+					console.log('📥 Mensagem processada com sucesso');
+				} catch (error) {
+					console.error('❌ Erro ao processar a mensagem:', error);
+				}
+			});
+		} catch (error) {
+			console.error('❌ Erro ao iniciar o listener do RabbitMQ:', error);
+		}
+	};
+	await listenQueue();
+}
+
+bootstrap();

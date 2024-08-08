@@ -10,13 +10,18 @@ type OrderUpdateStatusParams = {
 };
 
 @injectable()
-export default class OrderUpdateStatusUseCase implements IBaseUseCase<OrderUpdateStatusParams, IOrder | null> {
+export default class OrderUpdateStatusUseCase
+	implements IBaseUseCase<OrderUpdateStatusParams, IOrder | null>
+{
 	constructor(
-    @inject('OrderRepository')
-    private orderRepository: IOrderRepository
+		@inject('OrderRepository')
+		private orderRepository: IOrderRepository,
 	) {}
 
-	async execute({id, status}: OrderUpdateStatusParams): Promise<IOrder | null> {
+	async execute({
+		id,
+		status,
+	}: OrderUpdateStatusParams): Promise<IOrder | null> {
 		return this.orderRepository.update(id, status);
 	}
 }
