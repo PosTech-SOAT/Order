@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { inject, injectable } from 'tsyringe';
 import { IOrderRepository } from '../../interfaces/repositories/IOrderRepository';
 import { OrderStatus } from '../../entities/Order';

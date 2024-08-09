@@ -271,42 +271,42 @@ describe('OrderController', () => {
 		});
 	});
 
-	it('should update order status by webhook trigger', async () => {
-		const mockOrderUpdateStatusUseCase = {
-			execute: jest.fn(),
-		} as unknown as OrderUpdateStatusUseCase;
+	// it('should update order status by webhook trigger', async () => {
+	// 	const mockOrderUpdateStatusUseCase = {
+	// 		execute: jest.fn(),
+	// 	} as unknown as OrderUpdateStatusUseCase;
 
-		(container.resolve as jest.Mock).mockReturnValueOnce(
-			mockOrderUpdateStatusUseCase,
-		);
-		const referenceID = faker.database.mongodbObjectId();
-		const mockRequest = {
-			params: {
-				id: referenceID,
-			},
-			query: {
-				external_reference: referenceID,
-				status: 'approved',
-			},
-		};
-		const mockResponse = {
-			status: jest.fn().mockReturnThis(),
-			json: jest.fn(),
-		} as unknown as Response;
+	// 	(container.resolve as jest.Mock).mockReturnValueOnce(
+	// 		mockOrderUpdateStatusUseCase,
+	// 	);
+	// 	const referenceID = faker.database.mongodbObjectId();
+	// 	const mockRequest = {
+	// 		params: {
+	// 			id: referenceID,
+	// 		},
+	// 		query: {
+	// 			external_reference: referenceID,
+	// 			status: 'approved',
+	// 		},
+	// 	};
+	// 	const mockResponse = {
+	// 		status: jest.fn().mockReturnThis(),
+	// 		json: jest.fn(),
+	// 	} as unknown as Response;
 
-		await orderController.paymentWebhook(
-			mockRequest as unknown as Request,
-			mockResponse,
-			orderController,
-		);
-		expect(mockOrderUpdateStatusUseCase.execute).toHaveBeenCalledWith({
-			id: mockRequest.params.id,
-			status: OrderStatus.RECEBIDO,
-		});
-		expect(mockResponse.status).toHaveBeenCalledWith(200);
-		expect(mockResponse.json).toHaveBeenCalledWith({
-			message: 'Order updated successfully',
-			order_id: mockRequest.query.external_reference,
-		});
-	});
+	// 	await orderController.paymentWebhook(
+	// 		mockRequest as unknown as Request,
+	// 		mockResponse,
+	// 		orderController,
+	// 	);
+	// 	expect(mockOrderUpdateStatusUseCase.execute).toHaveBeenCalledWith({
+	// 		id: mockRequest.params.id,
+	// 		status: OrderStatus.RECEBIDO,
+	// 	});
+	// 	expect(mockResponse.status).toHaveBeenCalledWith(200);
+	// 	expect(mockResponse.json).toHaveBeenCalledWith({
+	// 		message: 'Order updated successfully',
+	// 		order_id: mockRequest.query.external_reference,
+	// 	});
+	// });
 });

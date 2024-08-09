@@ -30,7 +30,7 @@ async function bootstrap() {
 		);
 	});
 
-	const listenQueue = async () => {
+	const listenPaymentQueue = async () => {
 		try {
 			const orderController = new OrderController();
 			await rabbitMqInstance.start();
@@ -48,7 +48,38 @@ async function bootstrap() {
 			console.error('❌ Erro ao iniciar o listener do RabbitMQ:', error);
 		}
 	};
-	await listenQueue();
+
+	const listenLgpdQueue = async () => {
+		try {
+			const orderController = new OrderController();
+			await rabbitMqInstance.start();
+			console.log('🚀 RabbitMQ connected and listening...');
+			const handleMessage = async (id: string) => {
+				await orderController.lgpdExecution(id);
+			};
+			await rabbitMqInstance.keepConnection('lgpd_execution');
+			await rabbitMqInstance.listen('lgpd_execution', async (message) => {
+				try {
+					console.log('Mensagem recebida:', message);
+					const exclusionForm: Record<string, string> = JSON.parse(
+						message.content.toString(),
+					);
+					if (exclusionForm.exclude) {
+						await handleMessage(exclusionForm.id);
+					}
+					console.log('📥 Mensagem processada com sucesso');
+				} catch (error) {
+					console.error('❌ Erro ao processar a mensagem:', error);
+				}
+			});
+		} catch (error) {
+			console.error('❌ Erro ao iniciar o listener do RabbitMQ:', error);
+		}
+	};
+	setTimeout(() => {
+		listenPaymentQueue();
+		listenLgpdQueue();
+	}, 5000);
 }
 
 bootstrap();
