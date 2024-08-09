@@ -12,6 +12,7 @@ import { PaymentWebhookRequestParams } from '../dto/PaymentWebhookRequestDto';
 import { IPaymentRepository } from '../../domain/interfaces/repositories/IPaymentRepository';
 import rabbitMqInstance from '../../data/data-sources/factories/RabbitMqInstance';
 import { Message } from 'amqplib';
+import OrderLgpdExecutionUseCase from '../../domain/use-cases/Order/OrderLgpdExecutionUseCase';
 
 export default class OrderController {
 	private paymentRepository: IPaymentRepository;
@@ -140,6 +141,17 @@ export default class OrderController {
 				.json({ message: 'Order deleted successfully' });
 		} catch (error: any) {
 			return response.status(400).json({ message: error.message });
+		}
+	}
+
+	async lgpdExecution(clientId: string) {
+		const deleteOrderUseCase = container.resolve(OrderLgpdExecutionUseCase);
+		try {
+			await deleteOrderUseCase.execute(clientId);
+
+			return Promise.resolve();
+		} catch (error: any) {
+			return Promise.reject();
 		}
 	}
 }

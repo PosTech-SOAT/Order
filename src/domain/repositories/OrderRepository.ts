@@ -149,4 +149,23 @@ export class OrderRepository implements IOrderRepository {
 
 		return connection.save(order);
 	}
+
+	async deleteAllOrdersByClientid(clientId: string) {
+		const connection = this.getRepo();
+		// const orders = await connection
+		// 	.createQueryBuilder('order')
+		// 	.leftJoinAndSelect('order.products', 'products')
+		// 	.leftJoinAndSelect('products.product', 'product')
+		// 	.delete()
+		// 	.where('order.clientId = :clientId', { clientId })
+		// 	.execute();
+
+		await connection
+			.createQueryBuilder('delete_all_order_by_client_id')
+			.delete()
+			.from(Order)
+			.where('clientId = :clientId', { clientId })
+			.execute();
+		return Promise.resolve();
+	}
 }
